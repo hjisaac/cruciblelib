@@ -33,3 +33,22 @@ def test_create_job_scaffold(tmp_path: Path, monkeypatch) -> None:
     assert (created / "job.py").exists()
     assert (created / "configs" / "default.yaml").exists()
     assert (created / "__init__.py").exists()
+
+
+def test_load_run_config_default_log_dir(tmp_path: Path, monkeypatch) -> None:
+    from crucible.core.config.loader import load_run_config
+
+    jobs_root = tmp_path / "jobs"
+    job_dir = jobs_root / "my_job"
+    configs_dir = job_dir / "configs"
+    configs_dir.mkdir(parents=True)
+    (job_dir / "__init__.py").write_text("", encoding="utf-8")
+    (job_dir / "job.py").write_text("", encoding="utf-8")
+    (configs_dir / "default.yaml").write_text("foo: bar\n", encoding="utf-8")
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CRUCIBLE_JOBS_ROOT", str(jobs_root))
+
+    cfg, _, _ = load_run_config("my_job", "default")
+    assert cfg["foo"] == "bar"
+    assert cfg["log_dir"] == str(job_dir / "outputs")

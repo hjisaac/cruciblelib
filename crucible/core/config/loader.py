@@ -79,4 +79,6 @@ def load_run_config(
             f"Config '{config_name}' for job '{normalized_job_name}' must resolve to a dictionary."
         )
 
+    resolved.setdefault("log_dir", str(job_dir / "outputs"))
+
     return resolved, config_path, resolved_overrides

@@ -4,7 +4,6 @@ from typing import Any
 
 from omegaconf import OmegaConf
 
-from crucible.core.config.loader import load_run_config
 from crucible.core.runtime.discovery import resolve_job_class
 from crucible.core.runtime.sweeping import run_job
 from crucible.core.types import OnError
@@ -35,6 +34,7 @@ def run_named_job(
     """Resolve a job by name, load its config from disk, and run it -- once,
     or once per combination if the config varies anything."""
     job_class = resolve_job_class(job_name)
+    from crucible.core.config.loader import load_run_config
     config, config_path, resolved_overrides = load_run_config(job_name, config_name, overrides=overrides)
     _log_runtime_config(job_name, config_path, config, resolved_overrides)
     return run_job(job_class, config, n_jobs=n_jobs, on_error=on_error)

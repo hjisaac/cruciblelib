@@ -7,10 +7,11 @@ TDefault = TypeVar("TDefault")
 
 
 def get_timestamped_id() -> str:
-    """A unique, roughly-sortable id: a compact timestamp plus a short random hex."""
+    """A unique, roughly-sortable id: a readable timestamp plus a 4-char uppercase random string."""
     now = datetime.now()
-    timestamp = now.strftime("%Y-%m-%d_%H%M%S")
-    return f"{timestamp}_{uuid.uuid4().hex[:6]}"
+    timestamp = now.strftime("%Y-%b-%d_%H-%M-%S")
+    rand_suffix = uuid.uuid4().hex[:4].upper()
+    return f"{timestamp}_{rand_suffix}"
 
 
 def smart_getattr(
